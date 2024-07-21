@@ -11,6 +11,18 @@ typedef struct no
 
 typedef no *arvore;
 
+arvore rotacao_simples_direita(arvore raiz){
+    arvore p,u,t2;
+
+    p = raiz;
+    u = p->esq;
+    t2 = u->dir;
+
+    u->dir = p;
+    p->esq = t2;
+
+    return u;
+}
 
 arvore rotacao_simples_esquerda(arvore raiz){
     arvore p,u,t2;
@@ -53,12 +65,20 @@ arvore rotacionar(arvore raiz)
     }
     else
     {
-        arvore u = p->esq;
+        arvore u = raiz->esq;
 
         if(u->fb <= 0){
             //se fator de balanço de u for menor ou igual a 0 a rotação é simples para a direita
-            printf("\nrotacao simples para a direita"); 
-            printf("\n P: %d",p->chave);
+
+            if(u->fb == -1){
+                p->fb = 0;
+                u->fb = 0;
+            }else{
+                u->fb = 1;
+                p->fb = -1; 
+            }
+
+            return rotacao_simples_direita(raiz);
         }else{
             //rotacao dupla para a direita
             printf("\nrotacao dupla para a direita");
@@ -132,8 +152,8 @@ arvore inserir(arvore raiz, int valor, int *cresceu)
                 switch (raiz->fb)
                 {
                 case -1:
+                    *cresceu = 0;
                     return rotacionar(raiz);
-                    break;
                 case 0:
                     raiz->fb = -1;
                     *cresceu = 1;
@@ -157,12 +177,12 @@ int main()
     /// code
     int cresceu;
 
-    ARV = inserir(ARV, 1, &cresceu);
-    ARV = inserir(ARV, 2, &cresceu);
-    ARV = inserir(ARV, 3, &cresceu);
-    ARV = inserir(ARV, 4, &cresceu);
-    ARV = inserir(ARV, 5, &cresceu);
     ARV = inserir(ARV, 6, &cresceu);
+    ARV = inserir(ARV, 5, &cresceu);
+    ARV = inserir(ARV, 4, &cresceu);
+    ARV = inserir(ARV, 3, &cresceu);
+    ARV = inserir(ARV, 2, &cresceu);
+    ARV = inserir(ARV, 1, &cresceu);
 
     printf("\npreOrder: ");
     preorder(ARV);
