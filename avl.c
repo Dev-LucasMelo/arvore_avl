@@ -12,20 +12,42 @@ typedef struct no
 typedef no *arvore;
 
 
-// função geral que chama as rotações
+arvore rotacao_simples_esquerda(arvore raiz){
+    arvore p,u,t2;
+
+    p = raiz;
+    u = p->dir;
+    t2 = u->esq;
+
+    //atualizacao de ponteiros 
+    u->esq = p;
+    p->dir = t2;
+
+    return u;
+}
+// função geral que chama as rotações e atualiza fator de balanço
 arvore rotacionar(arvore raiz)
 {
     arvore p = raiz;
 
     if (p->fb > 0)
     {
-        arvore u = p->dir;
+        //rotacao esquerda 
+        arvore u = raiz->dir;
 
         if(u->fb >= 0){
-            printf("rotacao simples para a esquerda");
-            printf("\n P: %d",p->chave);
+            //atualização de fator de balanço para cada caso de U (calculos)
+            if(u->fb == 1){
+                p->fb = 0;
+                u->fb = 0;
+            }else{
+                p->fb = 1;
+                u->fb = -1;
+            }
+
+            return rotacao_simples_esquerda(raiz);
         }else{
-            printf("rotacao dupla para a esquerda");
+            //atualização de fator de balanço para cada caso de V (calculos) 
             printf("\n P: %d",p->chave);
         }
     }
@@ -54,7 +76,7 @@ void preorder(arvore raiz)
     // Caso base implícito na negativa
     if (raiz != NULL)
     {
-        printf("[V: %d]  ", raiz->chave);
+        printf("[V: %d|FB: %d] -> ", raiz->chave,raiz->fb);
         preorder(raiz->esq);
         preorder(raiz->dir);
     }
@@ -95,8 +117,8 @@ arvore inserir(arvore raiz, int valor, int *cresceu)
                     *cresceu = 1;
                     break;
                 case 1:
+                    *cresceu = 0;
                     return rotacionar(raiz);
-                    break;
                 }
             }
         }
@@ -123,9 +145,8 @@ arvore inserir(arvore raiz, int valor, int *cresceu)
                 }
             }
         }
+        return raiz;
     }
-
-    return raiz;
 }
 
 int main()
@@ -137,8 +158,11 @@ int main()
     int cresceu;
 
     ARV = inserir(ARV, 1, &cresceu);
-    ARV = inserir(ARV, 3, &cresceu);
     ARV = inserir(ARV, 2, &cresceu);
+    ARV = inserir(ARV, 3, &cresceu);
+    ARV = inserir(ARV, 4, &cresceu);
+    ARV = inserir(ARV, 5, &cresceu);
+    ARV = inserir(ARV, 6, &cresceu);
 
     printf("\npreOrder: ");
     preorder(ARV);
