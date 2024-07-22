@@ -38,6 +38,15 @@ arvore rotacao_simples_esquerda(arvore raiz){
     return u;
 }
 // função geral que chama as rotações e atualiza fator de balanço
+
+arvore rotacao_dupla_direita(arvore raiz){
+    //atualizacao de ponteiros
+    raiz->esq = rotacao_simples_esquerda(raiz->esq);
+    raiz = rotacao_simples_direita(raiz);
+   
+    return raiz;
+}
+
 arvore rotacionar(arvore raiz)
 {
     arvore p = raiz;
@@ -80,9 +89,29 @@ arvore rotacionar(arvore raiz)
 
             return rotacao_simples_direita(raiz);
         }else{
-            //rotacao dupla para a direita
-            printf("\nrotacao dupla para a direita");
-            printf("\n P: %d",p->chave);
+            arvore v = u->dir;
+
+            //atualizacao de fator de balanço dupla direita
+            switch (v->fb)
+            {
+            case -1:
+                p->fb = 1;
+                u->fb = 0;
+                v->fb = 0;
+                break;
+            case 0:
+                p->fb = 0;
+                u->fb = 0;
+                v->fb = 0;
+                break;
+            case 1:
+                p->fb = 0;
+                u->fb = -1;
+                v->fb = 0;
+                break;
+            }
+
+            return rotacao_dupla_direita(raiz);
         }
 
     }
@@ -177,12 +206,12 @@ int main()
     /// code
     int cresceu;
 
-    ARV = inserir(ARV, 6, &cresceu);
-    ARV = inserir(ARV, 5, &cresceu);
-    ARV = inserir(ARV, 4, &cresceu);
-    ARV = inserir(ARV, 3, &cresceu);
-    ARV = inserir(ARV, 2, &cresceu);
-    ARV = inserir(ARV, 1, &cresceu);
+    ARV = inserir(ARV, 20, &cresceu);
+    ARV = inserir(ARV, 30, &cresceu);
+    ARV = inserir(ARV, 10, &cresceu);
+    ARV = inserir(ARV, 8, &cresceu);
+    ARV = inserir(ARV, 15, &cresceu);
+    ARV = inserir(ARV, 17, &cresceu);
 
     printf("\npreOrder: ");
     preorder(ARV);
