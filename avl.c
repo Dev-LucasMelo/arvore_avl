@@ -47,6 +47,13 @@ arvore rotacao_dupla_direita(arvore raiz){
     return raiz;
 }
 
+arvore rotacao_dupla_esquerda(arvore raiz){
+    raiz->dir = rotacao_simples_direita(raiz->dir);
+    raiz = rotacao_simples_esquerda(raiz);
+
+    return raiz;
+}
+
 arvore rotacionar(arvore raiz)
 {
     arvore p = raiz;
@@ -69,7 +76,28 @@ arvore rotacionar(arvore raiz)
             return rotacao_simples_esquerda(raiz);
         }else{
             //atualização de fator de balanço para cada caso de V (calculos) 
-            printf("\n P: %d",p->chave);
+            arvore v = u->esq;
+
+            switch (v->fb)
+            {
+            case -1:
+                p->fb = 0;
+                u->fb = 1;
+                v->fb = 0;
+                break;
+            case 0:
+                p->fb = 0;
+                u->fb = 0;
+                v->fb = 0;
+                break;
+            case 1:
+                p->fb = -1;
+                u->fb = 0;
+                v->fb = 0;
+                break;
+            }
+
+            return rotacao_dupla_esquerda(raiz);
         }
     }
     else
@@ -203,15 +231,14 @@ int main()
     // inicializando arvore
     arvore ARV;
     ARV = NULL;
-    /// code
     int cresceu;
 
     ARV = inserir(ARV, 20, &cresceu);
     ARV = inserir(ARV, 30, &cresceu);
     ARV = inserir(ARV, 10, &cresceu);
-    ARV = inserir(ARV, 8, &cresceu);
-    ARV = inserir(ARV, 15, &cresceu);
-    ARV = inserir(ARV, 17, &cresceu);
+    ARV = inserir(ARV, 25, &cresceu);
+    ARV = inserir(ARV, 35, &cresceu);
+    ARV = inserir(ARV, 23, &cresceu);
 
     printf("\npreOrder: ");
     preorder(ARV);
