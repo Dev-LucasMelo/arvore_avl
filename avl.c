@@ -226,22 +226,89 @@ arvore inserir(arvore raiz, int valor, int *cresceu)
     }
 }
 
+arvore remover(arvore raiz, int valor, int *diminuiu){
+    //caso base 
+
+    //tratamento para remover algo de arvore vazia
+    if(raiz == NULL){
+        *diminuiu = 0;
+        return NULL;
+    }
+
+    //encontrou o elemento na arvore
+    if(raiz->chave == valor){
+        *diminuiu = 1; // -> indica que diminuiu
+
+        // possui 0 filhos
+        if(raiz->dir == NULL && raiz->esq==NULL){
+            free(raiz);
+            return NULL;
+        }
+
+        //possui exatamente um filho direito
+        if(raiz->dir != NULL && raiz->esq==NULL){
+            arvore aux = raiz->dir;
+            free(raiz);
+            return aux;
+        }
+
+        //possui exatamente um filho esquerdo
+        if(raiz->dir == NULL && raiz->esq != NULL){
+            arvore aux = raiz->esq;
+            free(raiz);
+            return aux;
+        }
+
+        //2 filhos (chama caso 0 filhos ou 1 filho recursivamente)
+        if(raiz->dir != NULL && raiz->esq != NULL){
+            arvore aux = raiz->esq;
+
+            while (aux->dir != NULL){
+                aux = aux->dir;
+            };
+            
+            raiz->chave = aux->chave;
+            aux->chave = valor;
+
+            raiz->esq = remover(raiz,valor,diminuiu);
+            return raiz;
+        }
+
+    }else{
+        //procura elemento e atualiza fatores de balanço
+        if(valor > raiz->chave){
+            //implementar caso recursivo a direita + atualização de fator de balanço para cada caso
+        }else{
+            //implementar caso recursivo a esquerda + atualização de fator de balanço para cada caso
+        }
+        
+    }
+
+    return raiz;
+}
+
 int main()
 {
     // inicializando arvore
     arvore ARV;
     ARV = NULL;
     int cresceu;
+    int diminuiu;
 
     ARV = inserir(ARV, 20, &cresceu);
     ARV = inserir(ARV, 30, &cresceu);
     ARV = inserir(ARV, 10, &cresceu);
     ARV = inserir(ARV, 25, &cresceu);
     ARV = inserir(ARV, 35, &cresceu);
-    ARV = inserir(ARV, 23, &cresceu);
+    ARV = inserir(ARV, 15, &cresceu);
+    ARV = inserir(ARV, 5, &cresceu);
+    ARV = inserir(ARV, 40, &cresceu);
+    ARV = inserir(ARV, 13, &cresceu);
 
     printf("\npreOrder: ");
     preorder(ARV);
+
+
 
     return 0;
 };
