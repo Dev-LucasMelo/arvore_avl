@@ -277,11 +277,30 @@ arvore remover(arvore raiz, int valor, int *diminuiu){
     }else{
         //procura elemento e atualiza fatores de balanço
         if(valor > raiz->chave){
-            //implementar caso recursivo a direita + atualização de fator de balanço para cada caso
+            raiz->dir = remover(raiz->dir,valor,diminuiu);
+
+            if(*diminuiu){
+                
+                switch (raiz->fb)
+                {
+                case -1:
+                    return rotacionar(raiz);
+                case 0:
+                    *diminuiu = 0;
+                    raiz->fb = -1;
+                    break;
+                case 1:
+                    *diminuiu = 1 ;
+                    raiz->fb = 0;
+                    break;
+                }
+            }
         }else{
+            raiz->esq = remover(raiz->esq,valor,diminuiu);
+
             //implementar caso recursivo a esquerda + atualização de fator de balanço para cada caso
         }
-        
+        return raiz;
     }
 
     return raiz;
@@ -305,10 +324,24 @@ int main()
     ARV = inserir(ARV, 40, &cresceu);
     ARV = inserir(ARV, 13, &cresceu);
 
-    printf("\npreOrder: ");
+    printf("\npreOrder antes da remocao: \n\n");
+    preorder(ARV);
+    
+    printf("\n\n");
+    ARV = remover(ARV,40, &diminuiu);
+
+    printf("\npreOrder apos  remover o 40: \n\n");
     preorder(ARV);
 
+    ARV = remover(ARV,35, &diminuiu);
 
+    printf("\npreOrder apos remover 35: \n\n");
+    preorder(ARV);
+
+    ARV = remover(ARV,25, &diminuiu);
+
+    printf("\npreOrder apos remover 25: \n\n");
+    preorder(ARV);
 
     return 0;
 };
