@@ -266,11 +266,10 @@ arvore remover(arvore raiz, int valor, int *diminuiu){
             while (aux->dir != NULL){
                 aux = aux->dir;
             };
-            
-            raiz->chave = aux->chave;
-            aux->chave = valor;
 
-            raiz->esq = remover(raiz,valor,diminuiu);
+            raiz->chave = aux->chave;
+
+            raiz->esq = remover(raiz->esq,aux->chave,diminuiu);
             return raiz;
         }
 
@@ -298,7 +297,21 @@ arvore remover(arvore raiz, int valor, int *diminuiu){
         }else{
             raiz->esq = remover(raiz->esq,valor,diminuiu);
 
-            //implementar caso recursivo a esquerda + atualização de fator de balanço para cada caso
+            if(*diminuiu){
+                switch (raiz->fb)
+                {
+                case -1:
+                    *diminuiu = 1;
+                    raiz->fb = 0;
+                    break;
+                case 0:
+                    *diminuiu = 0;
+                    raiz->fb = 1;
+                    break;
+                case 1:
+                    return rotacionar(raiz);
+                }
+            }
         }
         return raiz;
     }
@@ -313,35 +326,6 @@ int main()
     ARV = NULL;
     int cresceu;
     int diminuiu;
-
-    ARV = inserir(ARV, 20, &cresceu);
-    ARV = inserir(ARV, 30, &cresceu);
-    ARV = inserir(ARV, 10, &cresceu);
-    ARV = inserir(ARV, 25, &cresceu);
-    ARV = inserir(ARV, 35, &cresceu);
-    ARV = inserir(ARV, 15, &cresceu);
-    ARV = inserir(ARV, 5, &cresceu);
-    ARV = inserir(ARV, 40, &cresceu);
-    ARV = inserir(ARV, 13, &cresceu);
-
-    printf("\npreOrder antes da remocao: \n\n");
-    preorder(ARV);
-    
-    printf("\n\n");
-    ARV = remover(ARV,40, &diminuiu);
-
-    printf("\npreOrder apos  remover o 40: \n\n");
-    preorder(ARV);
-
-    ARV = remover(ARV,35, &diminuiu);
-
-    printf("\npreOrder apos remover 35: \n\n");
-    preorder(ARV);
-
-    ARV = remover(ARV,25, &diminuiu);
-
-    printf("\npreOrder apos remover 25: \n\n");
-    preorder(ARV);
 
     return 0;
 };
