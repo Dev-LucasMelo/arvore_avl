@@ -11,8 +11,9 @@ typedef struct no
 
 typedef no *arvore;
 
-arvore rotacao_simples_direita(arvore raiz){
-    arvore p,u,t2;
+arvore rotacao_simples_direita(arvore raiz)
+{
+    arvore p, u, t2;
 
     p = raiz;
     u = p->esq;
@@ -24,14 +25,15 @@ arvore rotacao_simples_direita(arvore raiz){
     return u;
 }
 
-arvore rotacao_simples_esquerda(arvore raiz){
-    arvore p,u,t2;
+arvore rotacao_simples_esquerda(arvore raiz)
+{
+    arvore p, u, t2;
 
     p = raiz;
     u = p->dir;
     t2 = u->esq;
 
-    //atualizacao de ponteiros 
+    // atualizacao de ponteiros
     u->esq = p;
     p->dir = t2;
 
@@ -39,15 +41,17 @@ arvore rotacao_simples_esquerda(arvore raiz){
 }
 // função geral que chama as rotações e atualiza fator de balanço
 
-arvore rotacao_dupla_direita(arvore raiz){
-    //atualizacao de ponteiros
+arvore rotacao_dupla_direita(arvore raiz)
+{
+    // atualizacao de ponteiros
     raiz->esq = rotacao_simples_esquerda(raiz->esq);
     raiz = rotacao_simples_direita(raiz);
-   
+
     return raiz;
 }
 
-arvore rotacao_dupla_esquerda(arvore raiz){
+arvore rotacao_dupla_esquerda(arvore raiz)
+{
     raiz->dir = rotacao_simples_direita(raiz->dir);
     raiz = rotacao_simples_esquerda(raiz);
 
@@ -60,22 +64,28 @@ arvore rotacionar(arvore raiz)
 
     if (p->fb > 0)
     {
-        //rotacao esquerda 
+        // rotacao esquerda
         arvore u = raiz->dir;
 
-        if(u->fb >= 0){
-            //atualização de fator de balanço para cada caso de U (calculos)
-            if(u->fb == 1){
+        if (u->fb >= 0)
+        {
+            // atualização de fator de balanço para cada caso de U (calculos)
+            if (u->fb == 1)
+            {
                 p->fb = 0;
                 u->fb = 0;
-            }else{
+            }
+            else
+            {
                 p->fb = 1;
                 u->fb = -1;
             }
 
             return rotacao_simples_esquerda(raiz);
-        }else{
-            //atualização de fator de balanço para cada caso de V (calculos) 
+        }
+        else
+        {
+            // atualização de fator de balanço para cada caso de V (calculos)
             arvore v = u->esq;
 
             switch (v->fb)
@@ -104,22 +114,28 @@ arvore rotacionar(arvore raiz)
     {
         arvore u = raiz->esq;
 
-        if(u->fb <= 0){
-            //se fator de balanço de u for menor ou igual a 0 a rotação é simples para a direita
+        if (u->fb <= 0)
+        {
+            // se fator de balanço de u for menor ou igual a 0 a rotação é simples para a direita
 
-            if(u->fb == -1){
+            if (u->fb == -1)
+            {
                 p->fb = 0;
                 u->fb = 0;
-            }else{
+            }
+            else
+            {
                 u->fb = 1;
-                p->fb = -1; 
+                p->fb = -1;
             }
 
             return rotacao_simples_direita(raiz);
-        }else{
+        }
+        else
+        {
             arvore v = u->dir;
 
-            //atualizacao de fator de balanço dupla direita
+            // atualizacao de fator de balanço dupla direita
             switch (v->fb)
             {
             case -1:
@@ -141,9 +157,7 @@ arvore rotacionar(arvore raiz)
 
             return rotacao_dupla_direita(raiz);
         }
-
     }
-
 
     return raiz;
 };
@@ -153,7 +167,7 @@ void preorder(arvore raiz)
     // Caso base implícito na negativa
     if (raiz != NULL)
     {
-        printf("[V: %d|FB: %d] -> ", raiz->chave,raiz->fb);
+        printf("[V: %d|FB: %d] -> ", raiz->chave, raiz->fb);
         preorder(raiz->esq);
         preorder(raiz->dir);
     }
@@ -227,9 +241,8 @@ arvore inserir(arvore raiz, int valor, int *cresceu)
 }
 
 arvore remover(arvore raiz, int valor, int *diminuiu){
-    //caso base 
+    //caso base
 
-    //tratamento para remover algo de arvore vazia
     if(raiz == NULL){
         *diminuiu = 0;
         return NULL;
@@ -240,13 +253,13 @@ arvore remover(arvore raiz, int valor, int *diminuiu){
         *diminuiu = 1; // -> indica que diminuiu
 
         // possui 0 filhos
-        if(raiz->dir == NULL && raiz->esq==NULL){
+        if(raiz->dir == NULL && raiz->esq == NULL){
             free(raiz);
             return NULL;
         }
 
         //possui exatamente um filho direito
-        if(raiz->dir != NULL && raiz->esq==NULL){
+        if(raiz->dir != NULL && raiz->esq == NULL){
             arvore aux = raiz->dir;
             free(raiz);
             return aux;
@@ -270,18 +283,32 @@ arvore remover(arvore raiz, int valor, int *diminuiu){
             raiz->chave = aux->chave;
 
             raiz->esq = remover(raiz->esq,aux->chave,diminuiu);
+
+            //atualizar fator de balanço raiz (tem que ser identico ao da esquerda pois escolhemos pegar o maior elemento da esquerda)
+            if(*diminuiu){
+                switch (raiz->fb)
+                {
+                case -1:
+                    *diminuiu = 1;
+                    raiz->fb = 0;
+                    break;
+                case 0:
+                    *diminuiu = 0;
+                    raiz->fb = 1;
+                    break;
+                case 1:
+                    return rotacionar(raiz);
+                }
+            }
             return raiz;
         }
-
     }else{
-        //procura elemento e atualiza fatores de balanço
         if(valor > raiz->chave){
             raiz->dir = remover(raiz->dir,valor,diminuiu);
 
             if(*diminuiu){
-                
-                switch (raiz->fb)
-                {
+
+                switch (raiz->fb){
                 case -1:
                     return rotacionar(raiz);
                 case 0:
@@ -289,7 +316,7 @@ arvore remover(arvore raiz, int valor, int *diminuiu){
                     raiz->fb = -1;
                     break;
                 case 1:
-                    *diminuiu = 1 ;
+                    *diminuiu = 1;
                     raiz->fb = 0;
                     break;
                 }
@@ -313,9 +340,7 @@ arvore remover(arvore raiz, int valor, int *diminuiu){
                 }
             }
         }
-        return raiz;
     }
-
     return raiz;
 }
 
